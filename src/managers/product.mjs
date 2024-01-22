@@ -1,5 +1,5 @@
 import fs from "fs/promises";
-import __dirname from "../utils/utils.js";
+import __dirname from "../utils/utils.mjs";
 
 class ProductManagement {
   constructor() {
@@ -39,7 +39,7 @@ class ProductManagement {
       return this.products;
     } catch (error) {
       console.error("Error al obtener todos los productos:", error.message);
-      throw error; 
+      throw error;
     }
   }
 
@@ -47,23 +47,34 @@ class ProductManagement {
     try {
       await this.loadFromFile();
       const product = this.products.find((product) => product.id === id);
-  
+
       if (!product) {
         console.error(`Error: el producto con el id ${id} no existe.`);
-        throw new Error(`Producto con ID ${id} no encontrado`);
       }
-  
+
       return product;
     } catch (error) {
-      console.error(`Error al obtener el producto con ID ${id}:`, error.message);
-      throw error; 
+      console.error(
+        `Error al obtener el producto con ID ${id}:`,
+        error.message
+      );
+      throw error;
     }
   }
 
-  async addProduct(title, description, price, thumbnail, code, stock) {
+  async addProduct(
+    title,
+    description,
+    price,
+    thumbnail,
+    code,
+    stock,
+    status = true,
+    category
+  ) {
     await this.loadFromFile();
     //Validacion de datos
-    if (!title || !description || !price || !thumbnail || !code || !stock) {
+    if (!title || !description || !price || !code || !stock) {
       throw new Error("Faltan datos para dar de alta al producto");
     }
 
@@ -97,6 +108,8 @@ class ProductManagement {
       thumbnail,
       code,
       stock,
+      status,
+      category,
     };
 
     this.products.push(product);
@@ -105,7 +118,6 @@ class ProductManagement {
   }
 
   async updateProduct(id, updatedProduct) {
-    
     await this.loadFromFile();
     const index = this.products.findIndex((product) => product.id === id);
 
@@ -124,7 +136,8 @@ class ProductManagement {
     }
 
     // Normalizar y validar los datos actualizados
-    const { title, description, price, thumbnail, code, stock } = existingProduct;
+    const { title, description, price, thumbnail, code, stock } =
+      existingProduct;
     existingProduct.title = title.trim().toLowerCase();
     existingProduct.description = description.trim().toLowerCase();
     existingProduct.thumbnail = thumbnail.trim().toLowerCase();

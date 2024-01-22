@@ -1,46 +1,25 @@
 import express from "express";
-import bodyParser from "body-parser";
-import ProductManagement from "./managers/product.js";
+import __dirname from "./utils/utils.mjs";
+import productRouter from "./routes/product.router.mjs";
 
 const app = express();
 const PORT = 8080;
 
-app.use(bodyParser.json());
-
-const productManager = new ProductManagement();
-
-app.get("/products", async (req, res) => {
-  try {
-    const limit = req.query.limit ? parseInt(req.query.limit) : undefined;
-    const products = await productManager.getAllProducts(limit);
-    res.send({ products });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-app.get('/papa',(request,response)=>{
-    response.send('Hola express');
-})
 
 
-// Ruta para obtener un producto por ID
-app.get("/products/:pid", async (req, res) => {
-  try {
-    const productId = parseInt(req.params.pid);
-    await productManager.loadFromFile();
-    const product = await productManager.getProductById(productId);
-    if (product) {
-      res.send({ product });
-    } else {
-      res
-        .status(404)
-        .json({ error: `Producto con ID ${productId} no encontrado` });
-    }
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(`${__dirname}/public`));
+
+app.use("/api/product", productRouter);
+app.use("/api/product/pid", productRouter);
+
+
+
+ app.get('/papa',(request,response)=>{
+     response.send('Hola express');
+ })
+
 
 app.listen(PORT, () => {
     console.log(`Servidor escuchando en el puerto ${PORT}`);
