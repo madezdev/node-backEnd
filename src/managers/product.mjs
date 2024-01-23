@@ -32,7 +32,7 @@ class ProductManagement {
   async updateFile() {
     try {
       await fs.appendFile(this.path, JSON.stringify(this.products, null, 2));
-      console.log("Datos actualizados en el archivo con éxito en la carpeta.")
+      console.log("Datos actualizados en el archivo con éxito en la carpeta.");
     } catch (error) {
       console.error("Error al actualizar el archivo:", error.message);
       throw error;
@@ -141,7 +141,10 @@ class ProductManagement {
     this.saveToFile();
   }
 
-  async updateProduct(id, { title, description, price, thumbnail, code, stock, status, category}) {
+  async updateProduct(
+    id,
+    { title, description, price, thumbnail, code, stock, status, category }
+  ) {
     await this.loadFromFile();
     const index = this.products.findIndex((p) => p.id === parseInt(id));
 
@@ -154,13 +157,12 @@ class ProductManagement {
       this.products[index].stock = stock;
       this.products[index].status = status;
       this.products[index].category = category;
-  
+
       await this.saveToFile();
       return `Producto con id ${id} actualizado con éxito.`;
-    }else{
-      return `Producto con id ${id} no se encontro.`
+    } else {
+      return `Producto con id ${id} no se encontro.`;
     }
-    
   }
 
   async deleteProduct(id) {
