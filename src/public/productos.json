@@ -1,20 +1,24 @@
 [
   {
-    "id": 0,
-    "title": "producto de prueba",
-    "description": "este es un producto de prueba",
-    "price": 200,
-    "thumbnail": "sin imagen",
-    "code": "abc123",
-    "stock": 25
+    "id": 2,
+    "title": "creando desde el postman - 2",
+    "description": "probando la cracion de producto",
+    "price": 250,
+    "thumbnail": "www.consultoramutual.com.ar",
+    "code": "adb121",
+    "stock": 11,
+    "status": false,
+    "category": "Postman"
   },
   {
-    "id": 1,
-    "title": "producto de prueba 2",
-    "description": "este es un producto de prueba 2",
-    "price": 300,
-    "thumbnail": "sin imagen",
-    "code": "abc124",
-    "stock": 25
+    "id": 3,
+    "title": "creando desde el postman - 23",
+    "description": "probando la cracion de producto",
+    "price": 250,
+    "thumbnail": "www.consultoramutual.com.ar",
+    "code": "adb21",
+    "stock": 113,
+    "status": true,
+    "category": "Postman"
   }
 ]

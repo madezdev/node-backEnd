@@ -13,12 +13,11 @@ app.use(express.static(`${__dirname}/public`));
 
 app.use("/api/product", productRouter);
 app.use("/api/product/pid", productRouter);
+app.post("/api/new-product", productRouter);
+app.put("/api/product/pid", productRouter);
+app.delete("/api/product/pid", productRouter);
 
 
-
- app.get('/papa',(request,response)=>{
-     response.send('Hola express');
- })
 
 
 app.listen(PORT, () => {

@@ -3,7 +3,7 @@ import __dirname from "../utils/utils.mjs";
 
 class ProductManagement {
   constructor() {
-    this.autoIncrementId = 0;
+    this.idIncrement = 0;
     this.products = [];
     this.path = `${__dirname}/../public/productos.json`;
   }
@@ -25,6 +25,16 @@ class ProductManagement {
       console.log("Datos guardados en el archivo con éxito en la carpeta.");
     } catch (error) {
       console.error("Error al guardar en el archivo:", error.message);
+      throw error;
+    }
+  }
+
+  async updateFile() {
+    try {
+      await fs.appendFile(this.path, JSON.stringify(this.products, null, 2));
+      console.log("Datos actualizados en el archivo con éxito en la carpeta.")
+    } catch (error) {
+      console.error("Error al actualizar el archivo:", error.message);
       throw error;
     }
   }
@@ -73,8 +83,17 @@ class ProductManagement {
     category
   ) {
     await this.loadFromFile();
+
     //Validacion de datos
-    if (!title || !description || !price || !code || !stock) {
+    if (
+      !title ||
+      !description ||
+      !price ||
+      !code ||
+      !stock ||
+      !category ||
+      !thumbnail
+    ) {
       throw new Error("Faltan datos para dar de alta al producto");
     }
 
@@ -100,8 +119,13 @@ class ProductManagement {
       throw new Error(`Ya existe un producto con el mismo code ${code}`);
     }
 
+    const maxId = this.products.reduce(
+      (max, product) => (product.id > max ? product.id : max),
+      0
+    );
+
     const product = {
-      id: this.autoIncrementId++,
+      id: maxId + 1,
       title,
       description,
       price,
@@ -117,45 +141,26 @@ class ProductManagement {
     this.saveToFile();
   }
 
-  async updateProduct(id, updatedProduct) {
+  async updateProduct(id, { title, description, price, thumbnail, code, stock, status, category}) {
     await this.loadFromFile();
-    const index = this.products.findIndex((product) => product.id === id);
+    const index = this.products.findIndex((p) => p.id === parseInt(id));
 
-    if (index === -1) {
-      console.error(`Error: el producto con el id ${id} no existe.`);
-      return;
+    if (index !== -1) {
+      this.products[index].title = title;
+      this.products[index].description = description;
+      this.products[index].price = price;
+      this.products[index].thumbnail = thumbnail;
+      this.products[index].code = code;
+      this.products[index].stock = stock;
+      this.products[index].status = status;
+      this.products[index].category = category;
+  
+      await this.saveToFile();
+      return `Producto con id ${id} actualizado con éxito.`;
+    }else{
+      return `Producto con id ${id} no se encontro.`
     }
-    // Copiar el producto existente para no modificar el objeto original
-    const existingProduct = { ...this.products[index] };
-
-    // Actualizar solo los campos proporcionados en updatedProduct
-    for (const key in updatedProduct) {
-      if (Object.prototype.hasOwnProperty.call(updatedProduct, key)) {
-        existingProduct[key] = updatedProduct[key];
-      }
-    }
-
-    // Normalizar y validar los datos actualizados
-    const { title, description, price, thumbnail, code, stock } =
-      existingProduct;
-    existingProduct.title = title.trim().toLowerCase();
-    existingProduct.description = description.trim().toLowerCase();
-    existingProduct.thumbnail = thumbnail.trim().toLowerCase();
-    existingProduct.code = code.trim().toLowerCase();
-    existingProduct.price = parseFloat(price);
-    if (isNaN(existingProduct.price) || existingProduct.price <= 0) {
-      throw new Error("El precio debe ser un número positivo");
-    }
-    existingProduct.stock = parseInt(stock);
-    if (isNaN(existingProduct.stock) || existingProduct.stock <= 0) {
-      throw new Error("El stock debe ser un número positivo");
-    }
-
-    this.products[index] = existingProduct;
-
-    await this.saveToFile();
-
-    console.log(`Producto con id ${id} actualizado con éxito.`);
+    
   }
 
   async deleteProduct(id) {
