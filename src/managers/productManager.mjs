@@ -1,4 +1,4 @@
-import fs from "fs/promises";
+import fs from "node:fs/promises";
 import __dirname from "../utils/utils.mjs";
 
 class ProductManagement {
@@ -29,15 +29,6 @@ class ProductManagement {
     }
   }
 
-  async updateFile() {
-    try {
-      await fs.appendFile(this.path, JSON.stringify(this.products, null, 2));
-      console.log("Datos actualizados en el archivo con éxito en la carpeta.");
-    } catch (error) {
-      console.error("Error al actualizar el archivo:", error.message);
-      throw error;
-    }
-  }
 
   async getAllProducts() {
     try {
@@ -111,7 +102,6 @@ class ProductManagement {
       throw new Error("El stock debe ser un numero positivo");
     }
 
-    //Validar que no se repita el title y code del producto.
     if (this.products.some((p) => p.title.trim().toLowerCase() === title)) {
       throw new Error(`Ya existe un producto con el mismo título ${title}`);
     }

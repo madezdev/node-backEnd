@@ -1,5 +1,5 @@
 import { Router } from "express";
-import ProductManagement from "../managers/product.mjs";
+import ProductManagement from "../managers/productManager.mjs";
 
 const router = Router();
 
@@ -45,7 +45,7 @@ router.post("/", async (req, res) => {
       status,
       category,
     } = req.body;
-    const newProduct = await productManager.addProduct(
+    await productManager.addProduct(
       title,
       description,
       price,
